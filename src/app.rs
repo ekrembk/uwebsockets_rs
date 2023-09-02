@@ -8,13 +8,14 @@ use std::{
 use libuwebsockets_sys::{
     us_listen_socket_t, uws_app_any, uws_app_connect, uws_app_delete, uws_app_get, uws_app_listen,
     uws_app_listen_config_t, uws_app_options, uws_app_patch, uws_app_post, uws_app_put,
-    uws_app_run, uws_app_t, uws_app_trace, uws_create_app, uws_method_handler, uws_req_t,
-    uws_res_t, uws_ws,
+    uws_app_run, uws_app_t, uws_app_trace, uws_create_app, uws_method_handler, uws_publish,
+    uws_req_t, uws_res_t, uws_ws,
 };
 
 use crate::http_request::HttpRequest;
 use crate::http_response::HttpResponseStruct;
 use crate::us_socket_context_options::{UsSocketContextOptions, UsSocketContextOptionsCRepr};
+use crate::websocket::Opcode;
 use crate::websocket_behavior::WebSocketBehavior;
 
 type RoutesData<const SSL: bool> = Vec<Pin<Box<Box<dyn Fn(HttpResponseStruct<SSL>, HttpRequest)>>>>;
@@ -176,6 +177,25 @@ impl<const SSL: bool> Application<SSL> {
             uws_app_listen(SSL as i32, self.native, port, Some(on_listen), user_data);
         }
         self
+    }
+
+    pub fn publish(&self, topic: &str, message: &[u8], opcode: Opcode, compress: bool) -> bool {
+        unsafe {
+            let topic_ptr = topic.as_ptr() as *const c_char;
+            let topic_len = topic.len();
+            let message_ptr = message.as_ptr() as *const c_char;
+            let message_len = message.len();
+            uws_publish(
+                SSL as c_int,
+                self.native,
+                topic_ptr,
+                topic_len,
+                message_ptr,
+                message_len,
+                opcode.into(),
+                compress,
+            )
+        }
     }
 }
 
