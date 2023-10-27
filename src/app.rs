@@ -9,7 +9,7 @@ use libuwebsockets_sys::{
     us_listen_socket_t, uws_app_any, uws_app_close, uws_app_connect, uws_app_delete, uws_app_get,
     uws_app_listen, uws_app_listen_config_t, uws_app_options, uws_app_patch, uws_app_post,
     uws_app_put, uws_app_run, uws_app_t, uws_app_trace, uws_create_app, uws_method_handler,
-    uws_req_t, uws_res_t, uws_ws,
+    uws_publish, uws_req_t, uws_res_t, uws_ws,
 };
 
 use crate::http_request::HttpRequest;
@@ -191,6 +191,31 @@ impl<const SSL: bool> Application<SSL> {
             );
         }
         self
+    }
+
+    pub fn publish(
+        native: *mut uws_app_t,
+        topic: &str,
+        message: &[u8],
+        opcode: Opcode,
+        compress: bool,
+    ) -> bool {
+        unsafe {
+            let topic_ptr = topic.as_ptr() as *const c_char;
+            let topic_len = topic.len();
+            let message_ptr = message.as_ptr() as *const c_char;
+            let message_len = message.len();
+            uws_publish(
+                SSL as c_int,
+                native,
+                topic_ptr,
+                topic_len,
+                message_ptr,
+                message_len,
+                opcode.into(),
+                compress,
+            )
+        }
     }
 }
 
