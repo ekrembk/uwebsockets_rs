@@ -13,11 +13,13 @@ fn main() {
         println!("cargo:rustc-link-lib=crypto");
         println!("cargo:rustc-link-lib=c++");
     } else if is_linux {
-        println!("cargo:rustc-link-arg=/usr/lib/gcc/aarch64-linux-gnu/11/libstdc++.a");
-        println!("cargo:rustc-link-arg=/usr/lib/aarch64-linux-gnu/libcrypto.a");
-        println!("cargo:rustc-link-arg=/usr/lib/aarch64-linux-gnu/libssl.a");
-        println!("cargo:rustc-link-arg=/usr/lib/aarch64-linux-gnu/libuv_a.a");
-        println!("cargo:rustc-link-arg=/usr/lib/aarch64-linux-gnu/libz.a");
+        // x86_64-linux-gnu
+        println!("/root/libuwebsockets-sys/uWebSockets/capi/libuwebsockets.a");
+        println!("cargo:rustc-link-arg=/usr/lib/gcc/x86_64-linux-gnu/10/libstdc++.a");
+        println!("cargo:rustc-link-arg=/usr/lib/x86_64-linux-gnu/libcrypto.a");
+        println!("cargo:rustc-link-arg=/usr/lib/x86_64-linux-gnu/libssl.a");
+        println!("cargo:rustc-link-arg=/usr/lib/x86_64-linux-gnu/libuv.a");
+        println!("cargo:rustc-link-arg=/usr/lib/x86_64-linux-gnu/libz.a");
     } else {
         panic!("Only macOS and Linux are currently supported")
     }
