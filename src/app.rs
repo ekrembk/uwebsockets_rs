@@ -24,7 +24,7 @@ type RoutesData<const SSL: bool> = Vec<Pin<Box<Box<dyn Fn(HttpResponseStruct<SSL
 pub struct Application<const SSL: bool> {
     routes_data: RoutesData<SSL>,
     _socket_context_options: UsSocketContextOptionsCRepr,
-    native: NativeApp,
+    pub native: NativeApp,
 }
 
 impl<const SSL: bool> Application<SSL> {
