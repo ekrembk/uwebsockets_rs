@@ -16,6 +16,7 @@ use crate::http_request::HttpRequest;
 use crate::http_response::HttpResponseStruct;
 use crate::listen_socket::ListenSocket;
 use crate::us_socket_context_options::{UsSocketContextOptions, UsSocketContextOptionsCRepr};
+use crate::websocket::Opcode;
 use crate::websocket_behavior::WebSocketBehavior;
 
 type RoutesData<const SSL: bool> = Vec<Pin<Box<Box<dyn Fn(HttpResponseStruct<SSL>, HttpRequest)>>>>;
